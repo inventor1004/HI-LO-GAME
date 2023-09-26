@@ -29,7 +29,7 @@
     </style>
   </head>
 
-  <script>
+  <script type="text/javascript">
     function inputValidate() 
     {
       let userInput  = document.getElementById("nameSpace").value;
@@ -38,16 +38,46 @@
 
       console.log("userInput : " + userInput, typeof userInput);
       console.log("nameLength: " + nameLength, typeof nameLength);
-      // 
- 
+
+      // clean up the UI from the previous use
+      document.getElementById("nameError").innerHTML = "";
+
+      // Check whether the user entered the blank input or not
+      if (nameLength == 0)
+      {
+        document.getElementById("nameError").innerHTML = "Your name <b>cannot</b> be BLANK.";
+      }
+      else 
+			{
+				// setup the regex for alpha characters and spaces
+        /* //: It stanfs for that is regex */ 
+				let lettersNSpaces = /^[A-Z a-z \s]+$/;
+				if(userInput.match(lettersNSpaces))
+				{
+				   nameValid=true;
+	  		}
+				else
+				{
+				  document.getElementById("nameError").innerHTML = "Your name must be made of <b>alpha</b> characters <u>only</u>.";
+				}
+	  	}
     }
+
+    
   </script>
 
   <body>
     <header>
-      <h1> Hi there! Please enter your name! </h1>
-      <input id="nameSpace" type="text" class="name-space" placeholder="Enter your name"></input>
-      <input id="nameSubmit" type="button" class="name-submit" value="Submit" onclick="inputValidate()"></input>
+      
+
+      <table id="inputTable">
+        <tr>
+          <h1> Hi there! Please enter your name! </h1>
+          <input id="nameSpace"  type="text"   class="name-space" placeholder="Enter your name"></input>
+          <input id="nameSubmit" type="button" class="name-submit" value="Submit" onclick="inputValidate()"></input>
+          <div   id="nameError"  style="color:red;"></div>
+        </tr>
+      </table>
     </header>
   </body>
 </html>
