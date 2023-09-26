@@ -26,7 +26,7 @@
         margin: 20px;
       }
 
-      .name-submit, .range-submit {
+      .name-submit, .range-submit, .number-submit {
         width: 6rem;
         height: 3rem;
         font-size: 21px;
@@ -53,7 +53,8 @@
   <script type="text/javascript">
     var whichDiv = 1;
     var name = "";
-    var randomNum;
+    var randomNum = 0;
+    let userGuess = 0;
 
     function nextDiv()
     {
@@ -63,14 +64,14 @@
           document.getElementById("section1").style.display="none";
 		      document.getElementById("section2").style.display="block";
           document.getElementById("greeting").textContent = `Hello ${name}! Please enter the maximum random number!`;
-          whichDive = 2;
+          whichDiv = 2;
         }
-        else if (whichDive == 2)
+        else if (whichDiv == 2)
         {
           // hide the second section and unhide the third section
           document.getElementById("section2").style.display="none";
           document.getElementById("section3").style.display="block";
-          whichDive = 3;
+          whichDiv = 3;
         }
         
     }
@@ -80,7 +81,7 @@
       let userInput  = document.getElementById("nameSpace").value;
       let nameLength = (userInput.trim()).length;
       let nameValid  = false;
-
+      
       console.log("userInput : " + userInput, typeof userInput);
       console.log("nameLength: " + nameLength, typeof nameLength);
 
@@ -136,15 +137,22 @@
         }
         else
         {
-          randomNum = Math.trunc(Math.random() * numberInput) + 1;
-          console.log(`Random Number is ${randomNum}.`);
-          nextDiv();
+          // generate the random number only at the first time
+          if (userGuess == 0)
+          {
+            // generate the random number which has a maximum random number gets from the user
+            randomNum = Math.trunc(Math.random() * numberInput) + 1;
+            console.log(`Random Number is ${randomNum}.`);
+            nextDiv(); 
+          }
         }
       }
     }
     
-
-    
+    function checkAnswer()
+    {
+      userGuess = (Number)document.getElementById("guessNum")
+    }
   </script>
 
   <body>    
@@ -166,6 +174,10 @@
 
     <!-- Thrid section: Getting user name -->
     <div id="section3" style = "display:none">
+      <h1>Guess the your number!</h1>
+      <input id="guessNum"  type="number" class="guess-num" placeholder="Guess the number"></input>
+      <button class="number-submit" onclick="checkAnswer()">Make This Guess</button>
+
     </div>
       
     </div>
