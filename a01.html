@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> HI-LO GAME </title>
+    <style>
+      body {
+        background: #eee;
+        color: #333;
+        font-size: 2rem;
+        text-align: center;
+        bottom: 0;
+      }
+
+      .name-space {
+        width: 18rem;
+        height: 3rem;
+        font-size: 21px;
+        text-align: center;
+        bottom: 0;
+      }
+
+      .name-submit {
+        width: 5rem;
+        height: 3rem;
+        font-size: 21px;
+        text-align: center;
+      }
+
+    </style>
+  </head>
+
+  <script>
+    function inputValidate() 
+    {
+      let userInput  = document.getElementById("nameSpace").value;
+      let nameLength = (userInput.trim()).length;
+      let nameValid  = false;
+
+      console.log("userInput : " + userInput, typeof userInput);
+      console.log("nameLength: " + nameLength, typeof nameLength);
+      // 
+ 
+    }
+  </script>
+
+  <body>
+    <header>
+      <h1> Hi there! Please enter your name! </h1>
+      <input id="nameSpace" type="text" class="name-space" placeholder="Enter your name"></input>
+      <input id="nameSubmit" type="button" class="name-submit" value="Submit" onclick="inputValidate()"></input>
+    </header>
+  </body>
+</html>
