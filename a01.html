@@ -3,34 +3,76 @@
   <head>
     <title> HI-LO GAME </title>
     <style>
+      * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+      }
+
       body {
         background: #eee;
         color: #333;
         font-size: 2rem;
         text-align: center;
-        bottom: 0;
+        border: 2px solid black;
       }
 
-      .name-space {
+      .name-space, .max-num {
         width: 18rem;
         height: 3rem;
         font-size: 21px;
         text-align: center;
-        bottom: 0;
       }
 
-      .name-submit {
-        width: 5rem;
+      .name-submit, .range-submit {
+        width: 6rem;
         height: 3rem;
         font-size: 21px;
         text-align: center;
+        margin-top: 10px;
+        margin-right: 2px;
+        margin-bottom: 10px;
+      }
+
+
+      .next-div { 
+        width: 6rem;
+        height: 3rem;
+        font-size: 21px;
+        text-align: center;
+        margin-top: 10px;
+        margin-left: 2px;
+        margin-bottom: 10px;
       }
 
     </style>
   </head>
 
   <script type="text/javascript">
-    function inputValidate() 
+    var whichDiv = 1;
+    var name = "";
+
+    function nextDiv()
+    {
+        if (whichDiv == 1)
+        {
+          // hide the first section and unhide the second section
+          document.getElementById("section1").style.display="none";
+		      document.getElementById("section2").style.display="block";
+          document.getElementById("greeting").textContent = `Hello ${name}! Please enter the maximum random number!`;
+          whichDive = 2;
+        }
+        else if (whichDive == 2)
+        {
+          // hide the second section and unhide the third section
+          document.getElementById("section2").style.display="none";
+          document.getElementById("section3").style.display="block";
+          whichDive = 3;
+        }
+        
+    }
+
+    function nameValidate() 
     {
       let userInput  = document.getElementById("nameSpace").value;
       let nameLength = (userInput.trim()).length;
@@ -50,34 +92,58 @@
       else 
 			{
 				// setup the regex for alpha characters and spaces
-        /* //: It stanfs for that is regex */ 
+        /* // : It stanfs forbeginning and end of the pattern delimit the regex pattern 
+         * ^  : This is an anchor that signifies the start of the regular expression. It indicates that the pattern should match from the very
+         *     beginning of the striA-Z: This matches any uppercase letter from 'A' to 'Z'
+         * a-z: This matches any lowercase letter from 'a' to 'z'
+         * \s : This represents whitespace characters, including spaces, tabs, and newline characters
+         * +  : This quantifier means that the preceding character class [A-Za-z\s] should match one or more characters.
+         */
 				let lettersNSpaces = /^[A-Z a-z \s]+$/;
 				if(userInput.match(lettersNSpaces))
 				{
-				   nameValid=true;
+				  nameValid = true;
+          name = userInput;
+          nextDiv();
 	  		}
 				else
 				{
 				  document.getElementById("nameError").innerHTML = "Your name must be made of <b>alpha</b> characters <u>only</u>.";
 				}
 	  	}
+
+      function numValidate()
+      {
+        let numberInput = document.getElementById("maxNum").value;
+      }
     }
+
+    
 
     
   </script>
 
-  <body>
-    <header>
-      
+  <body>    
+    <!-- First section: Getting user name -->
+    <div id="section1">
+      <h1> Hi there! Please enter your name! </h1>
+      <input  id="nameSpace"  type="text"   class="name-space" placeholder="Enter your name"></input>
+      <button class="name-submit" onclick="nameValidate()">Submit</button>
+      <div    id="nameError"  style="color:red;"></div>
+    </div>
 
-      <table id="inputTable">
-        <tr>
-          <h1> Hi there! Please enter your name! </h1>
-          <input id="nameSpace"  type="text"   class="name-space" placeholder="Enter your name"></input>
-          <input id="nameSubmit" type="button" class="name-submit" value="Submit" onclick="inputValidate()"></input>
-          <div   id="nameError"  style="color:red;"></div>
-        </tr>
-      </table>
-    </header>
+    <!-- Second section: Getting user name -->
+    <div id="section2" style = "display:none">
+      <h2 id="greeting"></h2>
+      <input id="maxNum"  type="number" class="max-num" placeholder="Enter the maximum number"></input>
+      <button class="range-submit" onclick="numValidate()">Submit</button>
+      <div id="rangeError"  style="color:red;"></div>
+    </div>
+
+    <!-- Thrid section: Getting user name -->
+    <div id="section3" style = "display:none">
+    </div>
+      
+    </div>
   </body>
 </html>
