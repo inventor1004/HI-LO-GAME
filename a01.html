@@ -16,9 +16,10 @@
         text-align: center;
         border: 2px solid black;
         margin: 40px;
+        padding: 35px;
       }
 
-      .name-space, .max-num {
+      .name-space, .max-num, .guess-num {
         width: 18rem;
         height: 3rem;
         font-size: 21px;
@@ -26,7 +27,9 @@
         margin: 20px;
       }
 
-      .name-submit, .range-submit, .number-submit {
+      
+
+      .name-submit, .range-submit {
         width: 6rem;
         height: 3rem;
         font-size: 21px;
@@ -36,25 +39,26 @@
         margin-bottom: 10px;
       }
 
-
-      .next-div { 
-        width: 6rem;
+      .guess-submit {
+        font-size: 15px;
         height: 3rem;
-        font-size: 21px;
-        text-align: center;
-        margin-top: 10px;
-        margin-left: 2px;
-        margin-bottom: 10px;
+      }
+
+      .name-error, .range-error, .guess-error{
+        font-size: 25px;
+        margin-bottom: 5px;
       }
 
     </style>
   </head>
 
   <script type="text/javascript">
-    var whichDiv = 1;
-    var name = "";
-    var randomNum = 0;
-    let userGuess = 0;
+    let whichDiv = 1;
+    let name = "";
+    let randomNum = 0;
+    let maxNumber = 0;
+    let lowHintRange = 0;
+    let highHintRange = maxNumber;
 
     function nextDiv()
     {
@@ -73,7 +77,10 @@
           document.getElementById("section3").style.display="block";
           whichDiv = 3;
         }
-        
+        else if (whichDiv == 3)
+        {
+          // hide the second section and unhide the third section
+        }
     }
 
     function nameValidate() 
@@ -121,37 +128,71 @@
 
     function numValidate()
     {
-      let numberInput = document.getElementById("maxNum").value;
-      console.log("userInput : " + numberInput, typeof numberInput);
+      maxNumber = document.getElementById("maxNum").value;
+     
+      console.log("userInput : " + maxNumber, typeof maxNumber);
 
-      if (numberInput == "")
+      if (maxNumber == "")
       {
         document.getElementById("rangeError").innerHTML = "You <b>cannot</b> enter BLANK.";
       }
       else
       {
-        numberInput = Number(numberInput);
-        if(numberInput <= 0)
+        // type cast string to number and store that value to the highHintRange
+        // which will be used to give some range hint to the user
+        maxNumber = Number(maxNumber);
+        highHintRange = maxNumber;
+        if(maxNumber <= 0)
         {
           document.getElementById("rangeError").innerHTML = "Please enter the number greater than 0.";
         }
         else
         {
-          // generate the random number only at the first time
-          if (userGuess == 0)
-          {
-            // generate the random number which has a maximum random number gets from the user
-            randomNum = Math.trunc(Math.random() * numberInput) + 1;
-            console.log(`Random Number is ${randomNum}.`);
-            nextDiv(); 
-          }
+          // generate the random number which has a maximum random number gets from the user
+          randomNum = Math.trunc(Math.random() * maxNumber) + 1;
+          console.log(`Random Number is ${randomNum}.`);
+          nextDiv(); 
         }
       }
     }
     
     function checkAnswer()
     {
-      userGuess = (Number)document.getElementById("guessNum")
+      let userGuess = document.getElementById("guessNum").value;
+      console.log("userGuess: " + userGuess);
+
+      if (userGuess == "")
+      {
+        document.getElementById("guessError").innerHTML = "You <b>cannot</b> enter BLANK.";
+      }
+      else
+      {
+        userGuess = Number(userGuess);
+        if(userGuess <= 0)
+        {
+          document.getElementById("guessError").innerHTML = "Please enter the number greater than 0.";
+        }
+        else if (userGuess > maxNumber)
+        {
+          document.getElementById("guessError").innerHTML = `Please enter the number between 0 and ${maxNumber}`;
+        }
+        else if ( userGuess == randomNum)
+        {
+          nextDiv();
+        }
+        else
+        {
+          if (userGuess < randomNum)
+          {
+            lowHintRange = userGuess + 1;
+          }
+          else
+          {
+            highHintRange = userGuess - 1;
+          }
+          document.getElementById("hint").innerHTML = `Your allowable guessing range is any value between ${lowHintRange} and ${highHintRange}`;
+        }        
+      }
     }
   </script>
 
@@ -161,23 +202,24 @@
       <h1> Hi there! Please enter your name! </h1>
       <input  id="nameSpace"  type="text"   class="name-space" placeholder="Enter your name"></input>
       <button class="name-submit" onclick="nameValidate()">Submit</button>
-      <div    id="nameError"  style="color:red;"></div>
+      <div    id="nameError" class = "name-error" style="color:red;"></div>
     </div>
 
     <!-- Second section: Getting user name -->
     <div id="section2" style = "display:none">
-      <h1 id="greeting"></h1>
-      <input id="maxNum"  type="number" class="max-num" placeholder="Enter the maximum number"></input>
+      <h1     id="greeting"></h1>
+      <input  id="maxNum"  type="number" class="max-num" placeholder="Enter the maximum number"></input>
       <button class="range-submit" onclick="numValidate()">Submit</button>
-      <div id="rangeError"  style="color:red;"></div>
+      <div    id="rangeError" class = "range-error"  style="color:red;"></div>
     </div>
 
     <!-- Thrid section: Getting user name -->
     <div id="section3" style = "display:none">
       <h1>Guess the your number!</h1>
-      <input id="guessNum"  type="number" class="guess-num" placeholder="Guess the number"></input>
-      <button class="number-submit" onclick="checkAnswer()">Make This Guess</button>
-
+      <input  id="guessNum"  type="number" class="guess-num" placeholder="Guess the number"></input>
+      <button class="guess-submit" onclick="checkAnswer()">Make This Guess</button>
+      <p      id = "hint"></p>
+      <div    id="guessError" class="guess-error"  style="color:red;"></div>
     </div>
       
     </div>
