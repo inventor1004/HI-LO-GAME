@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<!--
+	This sample script demonstrates an example of getting user input and also using JavaScript to
+	perform input-level validation as well as business-level (domain) validation.  Note that
+	business-level validation is being done in JavaScript since this is a single web page solution
+	with no "server-side" functionality.  As is the case with validation - it is important to give
+	the user comprehensive feedback as to issues found
+-->
+
 <html>
   <head>
     <title> HI-LO GAME </title>
@@ -27,8 +35,6 @@
         margin: 20px;
       }
 
-      
-
       .name-submit, .range-submit {
         width: 6rem;
         height: 3rem;
@@ -49,20 +55,38 @@
         margin-bottom: 5px;
       }
 
+      
       .h2 {
         font-size: 20px;
+      }
+
+      .play-again{
+        width: 9rem;
+        height: 4rem;
+        font-size: 16px;
+        text-align: center;
+        margin-top: 15px;
+        margin-right: 2px;
+        margin-bottom: 8px;
       }
     </style>
   </head>
 
   <script type="text/javascript">
-    let whichDiv = 1;
-    let name = "";
-    let randomNum = 0;
-    let maxNumber = 0;
-    let lowHintRange = 1;
-    let highHintRange = maxNumber;
 
+    let whichDiv = 1;              // State which section does the user playing around
+    let name = "";                 // Store the user name
+    let randomNum = 0;             // Randomly ganerated number based on the maximum range
+    let maxNumber = 0;             // Limit number of random number
+    let lowHintRange = 1;          // Lower hint number
+    let highHintRange = maxNumber; // Higher hint number
+
+
+    /* Function name: nextDive()                                                                  */
+    /* Discription  : This function is used to move from the current session to the next session. */
+    /*               Hide current section's elements and unhide the next section's elements       */
+    /* Parameter    : void                                                                        */
+    /* Return Value : void                                                                        */
     function nextDiv()
     {
         if (whichDiv == 1)
@@ -85,9 +109,24 @@
           // hide the third section and unhide the last section
           document.getElementById("section3").style.display="none";
           document.getElementById("section4").style.display="block";
+          document.getElementById("body").style.backgroundColor = "yellow";
+          whichDiv = 4;
+        }
+        else if (whichDiv == 4)
+        {
+		      document.getElementById("section2").style.display="block"
+          document.getElementById("section3").style.display="none";
+          document.getElementById("section4").style.display="none";
+          document.getElementById("body").style.backgroundColor = "";
+          whichDiv = 2;
         }
     }
 
+    /* Function name: nameValidate()                                                              */
+    /* Discription  : This function checks the name validation and prompt the error messages.     */
+    /*               - Error Lists: 1.blank error  2.alphabet error                                 */
+    /* Parameter    : void                                                                        */
+    /* Return Value : void                                                                        */
     function nameValidate() 
     {
       let userInput  = document.getElementById("nameSpace").value;
@@ -130,16 +169,24 @@
 
     }
 
-
+    /* Function name: numValidate()                                                                */
+    /* Discription  : This function gets checks the maximum number validation and prompt the error */
+    /*               messages.                                                            */
+    /*               - Error Lists: 1.blank error  2.Decinal number error                          */
+    /* Parameter    : void                                                                         */
+    /* Return Value : void                                                                         */
     function numValidate()
     {
       maxNumber = document.getElementById("maxNum").value;
+      let decimalCheck = (maxNumber % 1 == 0);
      
-      console.log("userInput : " + maxNumber, typeof maxNumber);
-
       if (maxNumber == "")
       {
         document.getElementById("rangeError").innerHTML = "You <b>cannot</b> enter BLANK.";
+      }
+      else if(decimalCheck == false)
+      {
+        document.getElementById("rangeError").innerHTML = "You <b>cannot</b> enter the decimal number.";
       }
       else
       {
@@ -161,31 +208,73 @@
       }
     }
     
+    /* Function name: numValidate()                                                              */
+    /* Discription  : This function checks the user guess number validation and prompt the error */
+    /*               and hint messages.                                                          */
+    /*               - Error Lists: 1.blank error  2.Decinal number error                        */
+    /* Parameter    : void                                                                       */
+    /* Return Value : void                                                                       */
     function checkAnswer()
     {
       let userGuess = document.getElementById("guessNum").value;
-      console.log("userGuess: " + userGuess);
+      let decimalCheck = (userGuess % 1 == 0);
       userGuess = Number(userGuess);
-      if ( userGuess == randomNum)
+
+
+      console.log("userGuess: ", userGuess, typeof userGuess);
+
+      if (userGuess > maxNumber || userGuess === 0)
       {
-        nextDiv();
+        document.getElementById("guessError").innerHTML = "It is out of range.";
       }
-      else if (userGuess > 0)
+      else if(decimalCheck == false)
       {
-        if (userGuess < randomNum)
+        document.getElementById("guessError").innerHTML = "You <b>cannot</b> enter the decimal number.";
+      }
+      else if (userGuess < 0)
+      {
+        document.getElementById("guessError").innerHTML = "You <b>cannot</b> enter the nagative number.";
+      }
+      else
+      {
+        if (userGuess == randomNum)
         {
-          lowHintRange = userGuess + 1;
+          nextDiv();
         }
+        else if (userGuess > 0)
+        {
+          if (userGuess < randomNum)
+          {
+            lowHintRange = userGuess + 1;
+          }
         else if (userGuess < maxNumber)
-        {
-          highHintRange = userGuess - 1;
-        }
-      }        
+          {
+            highHintRange = userGuess - 1;
+          }
+          document.getElementById("guessError").innerHTML = "";
+        }    
+      }
       document.getElementById("hint").innerHTML = `Your allowable guessing range is any value between ${lowHintRange} and ${highHintRange}`;
+    }
+
+    /* Function name: initializeGame()             */
+    /* Discription  : initialize global variables  */
+    /* Parameter    : void                         */
+    /* Return Value : void                         */
+    function initializeGame()
+    {
+      randomNum = 0;
+      maxNumber = 0;
+      lowHintRange = 1;
+      highHintRange = maxNumber;
+      document.getElementById("maxNum").value = "";
+      document.getElementById("guessNum").value = "";
+      document.getElementById("hint").innerHTML = "";
+      nextDiv();
     }
   </script>
 
-  <body>    
+  <body id="body">    
     <!-- First section: Getting user name -->
     <div id="section1">
       <h1> Hi there! Please enter your name! </h1>
@@ -207,14 +296,14 @@
       <h1>Guess the your number!</h1>
       <input  id="guessNum"  type="number" class="guess-num" placeholder="Guess the number"></input>
       <button class="guess-submit" onclick="checkAnswer()">Make This Guess</button>
-      <p      id = "hint"></p>
       <div    id="guessError" class="guess-error"  style="color:red;"></div>
+      <p      id = "hint"></p>
     </div>
       
     <!-- Forth section: Getting user name -->
     <div id="section4" style = "display:none">
-      <h2>Guess the your number!</h2>
-      <button class="play-again" onclick="initializeGame()">Play Again?</button>
+      <h2>You Win!! You guessed the number!!</h2>
+      <button class="play-again" onclick="initializeGame()">Wanna Play Again?</button>
     </div>
 
     </div>
